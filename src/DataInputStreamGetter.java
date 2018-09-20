@@ -4,21 +4,21 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-public class URLStreamGetter implements StreamGetter {
+public class DataInputStreamGetter implements StreamGetter {
 
     @Override
     public InputStream getStream(String URLString) {
         InputStream is = null;
         try {
-            URL fileName = new URL(URLString);
-            is = new DataInputStream(fileName.openStream());
-        }
-        catch (MalformedURLException e){
-            System.out.println("Malformed URL");
-        }
-        catch (IOException e){
-            System.out.println("Can't open the stream");
-        }
-        return is;
+        URL url = new URL(URLString);
+        is = new DataInputStream(url.openStream());
     }
+        catch (MalformedURLException e){
+        System.out.println("Malformed URL");
+    }
+        catch (IOException e){
+        System.out.println("Can't open the stream");
+    }
+        return is;
+}
 }
