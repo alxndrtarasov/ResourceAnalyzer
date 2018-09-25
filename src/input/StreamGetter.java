@@ -1,3 +1,5 @@
+package input;
+
 import java.io.InputStream;
 
 public interface StreamGetter {

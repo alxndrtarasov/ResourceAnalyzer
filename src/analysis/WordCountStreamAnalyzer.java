@@ -1,13 +1,33 @@
-import java.io.DataInputStream;
-import java.io.InputStream;
-import java.rmi.server.ExportException;
-import java.util.HashMap;
+package analysis;
 
-public class WordCountStreamAnalyzer implements StreamAnalyzer {
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class WordCountStreamAnalyzer implements StreamAnalyzer, ResultChanger {
+
+    private List<ResultChangeListener> listeners = new ArrayList<>();
+
+    public void setResult(Result result) throws WrongConfigurationException {
+        if (result instanceof WordCountResult) {
+            this.result = (WordCountResult) result;
+        } else {
+            throw new WrongConfigurationException();
+        }
+    }
+
+    private WordCountResult result;
+
+    public void addListener(ResultChangeListener toAdd) {
+        listeners.add(toAdd);
+    }
 
     @Override
-    public HashMap<String, Integer> analyzeStream(InputStream inputStream) {
-        HashMap<String, Integer> resultHashMap = new HashMap<>();
+    public void analyzeStream(InputStream inputStream) {
+        HashMap<String, Integer> resultHashMap = result.getResulted();
         if (inputStream instanceof DataInputStream) {
             try (DataInputStream DIS = (DataInputStream) inputStream) {
                 Character k;
@@ -26,10 +46,9 @@ public class WordCountStreamAnalyzer implements StreamAnalyzer {
                 System.out.print(e.toString());
             }
         }
-        return resultHashMap;
     }
 
-    private void putWord(String word, HashMap<String, Integer> map) {
+    private void putWord(String word, HashMap<String, Integer> map) throws WrongConfigurationException, IOException {
         if (word.length() == 0) {
             return;
         }
@@ -40,6 +59,9 @@ public class WordCountStreamAnalyzer implements StreamAnalyzer {
         } else {
             int initialCount = 1;
             map.put(word, initialCount);
+        }
+        for (ResultChangeListener listener : listeners) {
+            listener.resultChanged(result);
         }
     }
 }
