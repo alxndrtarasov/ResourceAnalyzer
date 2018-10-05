@@ -1,3 +1,6 @@
+package analysis;
+import input.StreamGetter;
+import output.AnalysisOutputter;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.List;
@@ -37,26 +40,22 @@ public class ResourceAnalyzer {
      * @throws IOException
      */
     public void analyzeResources (File inputFile, OutputStream outputStream) throws IOException, WrongConfigurationException {
-        try {
+
             List<String> resources = Files.readAllLines(inputFile.toPath());
             for (String line: resources) {
                 InputStream inputStream = getStream(line);
                 analyzeStream(inputStream);
                 inputStream.close();
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("There is no such file for input");
-        } catch (IOException e) {
-            System.out.println("Cannot open file for input");
-        }
+
         outputAnalysis(result, outputStream);
     }
 
-    private InputStream getStream(String URLString) {
+    private InputStream getStream(String URLString) throws IOException {
         return streamGetter.getStream(URLString);
     }
 
-    private void analyzeStream(InputStream inputStream) {
+    private void analyzeStream(InputStream inputStream) throws WrongConfigurationException, IOException {
         streamAnalyzer.analyzeStream(inputStream);
     }
 
