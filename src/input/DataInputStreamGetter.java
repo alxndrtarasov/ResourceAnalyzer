@@ -7,15 +7,15 @@ import java.net.URL;
 public class DataInputStreamGetter implements StreamGetter {
 
     @Override
-    public InputStream getStream(String URLString) {
-        InputStream is = null;
+    public InputStream getStream(String URLString) throws IOException {
+        InputStream is;
         try {
             URL url = new URL(URLString);
             is = new DataInputStream(url.openStream());
         } catch (MalformedURLException e) {
-            System.out.println("Malformed URL");
+            throw new MalformedURLException("Malformed URL");
         } catch (IOException e) {
-            System.out.println("Can't open the stream");
+            throw new IOException("Can't open the stream");
         }
         return is;
     }

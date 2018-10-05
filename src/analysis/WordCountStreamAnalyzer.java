@@ -7,9 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class WordCountStreamAnalyzer implements StreamAnalyzer, ResultChanger {
+public class WordCountStreamAnalyzer extends StreamAnalyzer {
 
     private List<ResultChangeListener> listeners = new ArrayList<>();
+    private WordCountAnalysisResult result;
 
     public void setResult(AnalysisResult result) throws WrongConfigurationException {
         if (result instanceof WordCountAnalysisResult) {
@@ -19,31 +20,17 @@ public class WordCountStreamAnalyzer implements StreamAnalyzer, ResultChanger {
         }
     }
 
-    private WordCountResult result;
-
     public void addListener(ResultChangeListener toAdd) {
         listeners.add(toAdd);
     }
 
     @Override
-    public void analyzeStream(InputStream inputStream) {
-        HashMap<String, Integer> resultHashMap = result.getResulted();
-        if (inputStream instanceof DataInputStream) {
-            try (DataInputStream DIS = (DataInputStream) inputStream) {
-                Character k;
-                StringBuilder word = new StringBuilder();
-                while (DIS.available() > 0) {
-                    k = (char) DIS.readByte();
-                    if (Character.isLetter(k)) {
-                        word.append(k);
-                    } else {
-                        putWord(word.toString(), resultHashMap);
-                        word = new StringBuilder();
-                    }
-                }
-                putWord(word.toString(), resultHashMap);
-            } catch (Exception e) {
-                System.out.print(e.toString());
+    public void analyzeStream(InputStream inputStream) throws IOException, WrongConfigurationException {
+        try (DataInputStream dataInputStream = (DataInputStream) inputStream) {
+            HashMap<String, Integer> resultHashMap = result.getResulted();
+            String word;
+            while((word = getWord(dataInputStream))!= null) {
+                putWord(word, resultHashMap);
             }
         }
     }

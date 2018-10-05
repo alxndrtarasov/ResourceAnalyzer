@@ -1,7 +1,7 @@
-import analysis.Result;
-import analysis.WordCountResult;
-import analysis.WordCountStreamAnalyzer;
-import analysis.WrongConfigurationException;
+import analysis.*;
+import output.WordDuplicateAnalysisOutputter;
+import analysis.WordDuplicateAnalysisResult;
+import analysis.WordDuplicateStreamAnalyzer;
 import input.DataInputStreamGetter;
 import output.WordCountAnalysisOutputter;
 
