@@ -11,9 +11,9 @@ public class WordCountStreamAnalyzer implements StreamAnalyzer, ResultChanger {
 
     private List<ResultChangeListener> listeners = new ArrayList<>();
 
-    public void setResult(Result result) throws WrongConfigurationException {
-        if (result instanceof WordCountResult) {
-            this.result = (WordCountResult) result;
+    public void setResult(AnalysisResult result) throws WrongConfigurationException {
+        if (result instanceof WordCountAnalysisResult) {
+            this.result = (WordCountAnalysisResult) result;
         } else {
             throw new WrongConfigurationException();
         }

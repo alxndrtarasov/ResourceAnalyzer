@@ -8,7 +8,7 @@ public class ResourceAnalyzer {
     private StreamAnalyzer streamAnalyzer;
     private AnalysisOutputter analysisOutputter;
 
-    private Result result;
+    private AnalysisResult result;
 
     public void setStreamGetter(StreamGetter streamGetter) {
         this.streamGetter = streamGetter;
@@ -22,7 +22,7 @@ public class ResourceAnalyzer {
         this.analysisOutputter = analysisOutputter;
     }
 
-    public ResourceAnalyzer(StreamGetter streamGetter, StreamAnalyzer streamAnalyzer, AnalysisOutputter analysisOutputter, Result result) throws WrongConfigurationException {
+    public ResourceAnalyzer(StreamGetter streamGetter, StreamAnalyzer streamAnalyzer, AnalysisOutputter analysisOutputter, AnalysisResult result) throws WrongConfigurationException {
         this.streamGetter = streamGetter;
         this.streamAnalyzer = streamAnalyzer;
         this.analysisOutputter = analysisOutputter;
@@ -60,7 +60,7 @@ public class ResourceAnalyzer {
         streamAnalyzer.analyzeStream(inputStream);
     }
 
-    private void outputAnalysis(Result analysis, OutputStream outputStream) throws IOException, WrongConfigurationException {
+    private void outputAnalysis(AnalysisResult analysis, OutputStream outputStream) throws IOException, WrongConfigurationException {
         analysisOutputter.outputAnalysis(analysis, outputStream);
     }
 

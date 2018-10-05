@@ -1,8 +1,8 @@
 package output;
 
-import analysis.Result;
+import analysis.AnalysisResult;
 import analysis.ResultChangeListener;
-import analysis.WordCountResult;
+import analysis.WordCountAnalysisResult;
 import analysis.WrongConfigurationException;
 
 import java.io.*;
@@ -12,10 +12,11 @@ import java.util.Map;
 public class WordCountAnalysisOutputter implements  AnalysisOutputter, ResultChangeListener {
 
     public WordCountAnalysisOutputter(OutputStream outputStream) {
-        this.outputStream = outputStream;
+        setOutputStream(outputStream);
     }
 
     private OutputStream outputStream;
+    private BufferedWriter outputWriter;
 
     public OutputStream getOutputStream() {
         return outputStream;
@@ -23,27 +24,27 @@ public class WordCountAnalysisOutputter implements  AnalysisOutputter, ResultCha
 
     public void setOutputStream(OutputStream outputStream) {
         this.outputStream = outputStream;
+        outputWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+
     }
 
     @Override
-    public void outputAnalysis(Result result, OutputStream outputStream) throws IOException, WrongConfigurationException {
-        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+    public void outputAnalysis(AnalysisResult result, OutputStream outputStream) throws IOException, WrongConfigurationException {
         HashMap<String, Integer> analysis;
-        if (result instanceof WordCountResult) {
-            analysis = ((WordCountResult) result).getResulted();
+        if (result instanceof WordCountAnalysisResult) {
+            analysis = ((WordCountAnalysisResult) result).getResulted();
         } else {
             throw new WrongConfigurationException();
         }
         for (Map.Entry<String, Integer> entry : analysis.entrySet()) {
-            bufferedWriter.write(entry.getKey()+ ": "+entry.getValue()+"\n");
+            outputWriter.write(entry.getKey()+ ": "+entry.getValue()+"\n");
         }
-        bufferedWriter.close();
     }
 
 
     @Override
-    public void resultChanged(Result result) throws WrongConfigurationException, IOException {
-        if (result instanceof WordCountResult) {
+    public void resultChanged(AnalysisResult result) throws WrongConfigurationException, IOException {
+        if (result instanceof WordCountAnalysisResult) {
             outputAnalysis(result, outputStream);
         } else {
             throw new WrongConfigurationException();
